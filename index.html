@@ -1,31 +1,201 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!doctype html>
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Conecta+</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body style="background:#121212;color:#fff;font-family:Arial;text-align:center;padding:40px">
-
-  <h1 style="color:#ff4d6d">Conecta+</h1>
-
-  <input id="nome" placeholder="Seu nome" style="padding:10px;width:90%;max-width:300px"><br><br>
-  <input id="objetivo" placeholder="O que você busca? (Ficar, Namorar ou Ambos)" style="padding:10px;width:90%;max-width:300px"><br><br>
-
-  <button onclick="criarPerfil()" style="padding:12px 20px;background:#ff4d6d;color:#fff;border:none;border-radius:5px">
-    Criar Perfil
-  </button>
-
-  <p id="resultado" style="margin-top:20px"></p>
-
-  <script>
-    function criarPerfil() {
-      const nome = document.getElementById("nome").value;
-      const objetivo = document.getElementById("objetivo").value;
-      document.getElementById("resultado").innerText =
-        "Olá " + nome + ", você busca: " + objetivo;
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Encontro Certo</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#121212; color:#fff; margin:0; }
+    .wrap { max-width:520px; margin:0 auto; padding:24px; }
+    .card { background:#1e1e1e; border-radius:16px; padding:18px; margin-top:16px; }
+    h1 { margin:10px 0 4px; color:#ff4d6d; }
+    .btn { width:100%; padding:14px 12px; border:0; border-radius:12px; font-weight:700; cursor:pointer; }
+    .btn-google { background:#fff; color:#111; }
+    .btn-out { background:#ff4d6d; color:#fff; margin-top:10px; }
+    .muted { color:#bdbdbd; font-size:14px; }
+    .row { display:flex; gap:12px; align-items:center; }
+    img { width:56px; height:56px; border-radius:50%; background:#333; }
+    .hidden { display:none; }
+    input, select {
+      width:100%; padding:12px; border-radius:12px; border:1px solid #333;
+      background:#121212; color:#fff; margin-top:10px;
     }
-  </script>
+    .small { font-size:12px; color:#9e9e9e; margin-top:10px; }
+    a { color:#7aa7ff; }
+  </style>
+</head>
 
+<body>
+  <div class="wrap">
+    <h1>Encontro Certo</h1>
+    <div class="muted">Ficar • Namorar • Ver o que rola (Brasil)</div>
+
+    <div class="card" id="loggedOut">
+      <p>Entre com Google para criar sua conta:</p>
+      <button class="btn btn-google" id="btnGoogle">Entrar com Google</button>
+      <div class="small">
+        Se der “domínio não autorizado”, volte no Firebase e adicione:
+        <b>william4028.github.io</b> em Authentication → Configurações → Domínios autorizados.
+      </div>
+    </div>
+
+    <div class="card hidden" id="loggedIn">
+      <div class="row">
+        <img id="photo" alt="foto" />
+        <div>
+          <div><b id="name"></b></div>
+          <div class="muted" id="email"></div>
+        </div>
+      </div>
+
+      <hr style="border:0;border-top:1px solid #2d2d2d;margin:14px 0;" />
+
+      <label class="muted">O que você busca?</label>
+      <select id="busca">
+        <option value="ficar">Ficar</option>
+        <option value="namorar">Namorar</option>
+        <option value="ver_o_que_rola">Ver o que rola</option>
+      </select>
+
+      <label class="muted">Cidade (opcional)</label>
+      <input id="cidade" placeholder="Ex: São Paulo - SP" />
+
+      <button class="btn btn-out" id="btnSave">Salvar perfil</button>
+      <button class="btn btn-out" style="background:#333;" id="btnLogout">Sair</button>
+
+      <div class="small" id="status"></div>
+    </div>
+
+    <div class="small" style="margin-top:14px;">
+      Hospedado em GitHub Pages: <a href="https://william4028.github.io/conecta-plus/" target="_blank" rel="noreferrer">abrir site</a>
+    </div>
+  </div>
+
+  <script type="module">
+    // ===== Firebase (v10.7.1) =====
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithRedirect,
+      getRedirectResult,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // 🔥 COLE AQUI SUA CONFIG DO FIREBASE (Configurações do projeto → Seus apps → Web)
+    const firebaseConfig = {
+      apiKey: "COLE_AQUI",
+      authDomain: "COLE_AQUI",
+      projectId: "COLE_AQUI",
+      storageBucket: "COLE_AQUI",
+      messagingSenderId: "COLE_AQUI",
+      appId: "COLE_AQUI"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // UI
+    const loggedOut = document.getElementById("loggedOut");
+    const loggedIn = document.getElementById("loggedIn");
+    const btnGoogle = document.getElementById("btnGoogle");
+    const btnLogout = document.getElementById("btnLogout");
+    const btnSave = document.getElementById("btnSave");
+    const nameEl = document.getElementById("name");
+    const emailEl = document.getElementById("email");
+    const photoEl = document.getElementById("photo");
+    const buscaEl = document.getElementById("busca");
+    const cidadeEl = document.getElementById("cidade");
+    const statusEl = document.getElementById("status");
+
+    function setStatus(msg) {
+      statusEl.textContent = msg || "";
+    }
+
+    // Login Google (Redirect é melhor no celular)
+    btnGoogle.addEventListener("click", async () => {
+      setStatus("Abrindo login do Google...");
+      const provider = new GoogleAuthProvider();
+      await signInWithRedirect(auth, provider);
+    });
+
+    // Quando voltar do Google
+    try {
+      await getRedirectResult(auth);
+    } catch (e) {
+      console.log(e);
+      setStatus("Erro no login: " + (e?.message || e));
+    }
+
+    // Estado do usuário
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        loggedIn.classList.add("hidden");
+        loggedOut.classList.remove("hidden");
+        setStatus("");
+        return;
+      }
+
+      loggedOut.classList.add("hidden");
+      loggedIn.classList.remove("hidden");
+
+      nameEl.textContent = user.displayName || "Usuário";
+      emailEl.textContent = user.email || "";
+      photoEl.src = user.photoURL || "https://via.placeholder.com/56";
+
+      // Carrega perfil do Firestore (se existir)
+      const ref = doc(db, "users", user.uid);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const data = snap.data();
+        if (data?.busca) buscaEl.value = data.busca;
+        if (data?.cidade) cidadeEl.value = data.cidade;
+        setStatus("Perfil carregado.");
+      } else {
+        // Cria um perfil básico na primeira vez
+        await setDoc(ref, {
+          uid: user.uid,
+          name: user.displayName || "",
+          email: user.email || "",
+          photoURL: user.photoURL || "",
+          busca: "ficar",
+          cidade: "",
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+        setStatus("Conta criada! Ajuste sua busca e salve seu perfil.");
+      }
+    });
+
+    // Salvar perfil
+    btnSave.addEventListener("click", async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      setStatus("Salvando...");
+      const ref = doc(db, "users", user.uid);
+      await setDoc(ref, {
+        busca: buscaEl.value,
+        cidade: cidadeEl.value.trim(),
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+
+      setStatus("✅ Perfil salvo!");
+    });
+
+    // Logout
+    btnLogout.addEventListener("click", async () => {
+      await signOut(auth);
+    });
+  </script>
 </body>
 </html>
