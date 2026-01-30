@@ -1,201 +1,259 @@
 <!doctype html>
-<html lang="pt-br">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Encontro Certo</title>
-  <style>
-    body { font-family: Arial, sans-serif; background:#121212; color:#fff; margin:0; }
-    .wrap { max-width:520px; margin:0 auto; padding:24px; }
-    .card { background:#1e1e1e; border-radius:16px; padding:18px; margin-top:16px; }
-    h1 { margin:10px 0 4px; color:#ff4d6d; }
-    .btn { width:100%; padding:14px 12px; border:0; border-radius:12px; font-weight:700; cursor:pointer; }
-    .btn-google { background:#fff; color:#111; }
-    .btn-out { background:#ff4d6d; color:#fff; margin-top:10px; }
-    .muted { color:#bdbdbd; font-size:14px; }
-    .row { display:flex; gap:12px; align-items:center; }
-    img { width:56px; height:56px; border-radius:50%; background:#333; }
-    .hidden { display:none; }
-    input, select {
-      width:100%; padding:12px; border-radius:12px; border:1px solid #333;
-      background:#121212; color:#fff; margin-top:10px;
-    }
-    .small { font-size:12px; color:#9e9e9e; margin-top:10px; }
-    a { color:#7aa7ff; }
-  </style>
-</head>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>ConectaPlus</title>
 
-<body>
-  <div class="wrap">
-    <h1>Encontro Certo</h1>
-    <div class="muted">Ficar • Namorar • Ver o que rola (Brasil)</div>
+    <style>
+      :root {
+        --bg: #0f0f12;
+        --card: #17171d;
+        --text: #f2f2f2;
+        --muted: #b8b8c2;
+        --pink: #ff4d6d;
+        --pink2: #ff2d55;
+        --line: rgba(255, 255, 255, 0.08);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        background: radial-gradient(1200px 800px at 70% 0%, rgba(255,77,109,.18), transparent 55%),
+                    radial-gradient(900px 700px at 0% 20%, rgba(255,45,85,.12), transparent 55%),
+                    var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+      .wrap { width: 100%; max-width: 420px; }
+      .brand {
+        font-size: 34px;
+        font-weight: 800;
+        letter-spacing: .2px;
+        margin: 0 0 14px;
+      }
+      .brand span { color: var(--pink); }
+      .card {
+        background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 18px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.35);
+      }
+      .muted { color: var(--muted); font-size: 14px; line-height: 1.4; margin: 0 0 14px; }
+      .row { display: flex; gap: 10px; align-items: center; }
+      .btn {
+        width: 100%;
+        border: 0;
+        border-radius: 12px;
+        padding: 14px 14px;
+        font-weight: 700;
+        cursor: pointer;
+        display: inline-flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        transition: transform .06s ease, opacity .2s ease;
+        user-select: none;
+      }
+      .btn:active { transform: scale(.98); }
+      .btn.primary { background: linear-gradient(90deg, var(--pink), var(--pink2)); color: white; }
+      .btn.ghost { background: rgba(255,255,255,.06); color: white; border: 1px solid var(--line); }
+      .btn:disabled { opacity: .55; cursor: not-allowed; }
+      .divider { height: 1px; background: var(--line); margin: 14px 0; }
+      .userBox { display: none; gap: 12px; align-items: center; }
+      .avatar {
+        width: 52px; height: 52px; border-radius: 14px;
+        background: rgba(255,255,255,.08);
+        border: 1px solid var(--line);
+        object-fit: cover;
+      }
+      .name { margin: 0; font-weight: 800; }
+      .email { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+      .status {
+        display: inline-flex;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(255,77,109,.14);
+        border: 1px solid rgba(255,77,109,.25);
+        color: #ffd1da;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .warn {
+        margin-top: 12px;
+        font-size: 12px;
+        color: #ffd1da;
+        opacity: .9;
+      }
+      .small { font-size: 12px; color: var(--muted); margin-top: 12px; }
+      code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+    </style>
+  </head>
 
-    <div class="card" id="loggedOut">
-      <p>Entre com Google para criar sua conta:</p>
-      <button class="btn btn-google" id="btnGoogle">Entrar com Google</button>
-      <div class="small">
-        Se der “domínio não autorizado”, volte no Firebase e adicione:
-        <b>william4028.github.io</b> em Authentication → Configurações → Domínios autorizados.
-      </div>
-    </div>
+  <body>
+    <div class="wrap">
+      <h1 class="brand">Conecta<span>Plus</span></h1>
 
-    <div class="card hidden" id="loggedIn">
-      <div class="row">
-        <img id="photo" alt="foto" />
-        <div>
-          <div><b id="name"></b></div>
-          <div class="muted" id="email"></div>
+      <div class="card">
+        <p class="muted">
+          Login rápido pra liberar seu perfil. Depois a gente coloca <b>Ficar / Namorar / Ver o que rola</b>.
+        </p>
+
+        <div id="loggedOut">
+          <button id="btnGoogle" class="btn primary">
+            <span>Entrar com Google</span>
+          </button>
+
+          <div class="warn" id="msg"></div>
+
+          <div class="small">
+            Se der erro de domínio, vamos ajustar em: <code>Firebase → Authentication → Configurações</code>.
+          </div>
+        </div>
+
+        <div id="loggedIn" style="display:none;">
+          <div class="row" style="justify-content:space-between; margin-bottom: 10px;">
+            <span class="status">Logado ✅</span>
+            <button id="btnLogout" class="btn ghost" style="width:auto; padding:10px 12px;">
+              Sair
+            </button>
+          </div>
+
+          <div class="row userBox" id="userBox">
+            <img id="avatar" class="avatar" alt="Foto" />
+            <div>
+              <p class="name" id="name">—</p>
+              <p class="email" id="email">—</p>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <button id="btnGo" class="btn primary">
+            Continuar
+          </button>
+
+          <p class="small">
+            Próximo passo: salvar seu perfil no Firestore (nome + objetivo + cidade).
+          </p>
         </div>
       </div>
-
-      <hr style="border:0;border-top:1px solid #2d2d2d;margin:14px 0;" />
-
-      <label class="muted">O que você busca?</label>
-      <select id="busca">
-        <option value="ficar">Ficar</option>
-        <option value="namorar">Namorar</option>
-        <option value="ver_o_que_rola">Ver o que rola</option>
-      </select>
-
-      <label class="muted">Cidade (opcional)</label>
-      <input id="cidade" placeholder="Ex: São Paulo - SP" />
-
-      <button class="btn btn-out" id="btnSave">Salvar perfil</button>
-      <button class="btn btn-out" style="background:#333;" id="btnLogout">Sair</button>
-
-      <div class="small" id="status"></div>
     </div>
 
-    <div class="small" style="margin-top:14px;">
-      Hospedado em GitHub Pages: <a href="https://william4028.github.io/conecta-plus/" target="_blank" rel="noreferrer">abrir site</a>
-    </div>
-  </div>
+    <!-- Firebase (compat) - ideal pra GitHub Pages (sem bundler) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
-  <script type="module">
-    // ===== Firebase (v10.7.1) =====
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import {
-      getAuth,
-      GoogleAuthProvider,
-      signInWithRedirect,
-      getRedirectResult,
-      onAuthStateChanged,
-      signOut
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import {
-      getFirestore,
-      doc,
-      setDoc,
-      getDoc,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    <script>
+      // 1) COLE AQUI O firebaseConfig DO SEU PROJETO (Configuração do SDK -> Config)
+      // Substitua tudo dentro do objeto abaixo.
+      const firebaseConfig = {
+        apiKey: "COLE_AQUI",
+        authDomain: "COLE_AQUI",
+        projectId: "COLE_AQUI",
+        storageBucket: "COLE_AQUI",
+        messagingSenderId: "COLE_AQUI",
+        appId: "COLE_AQUI"
+      };
 
-    // 🔥 COLE AQUI SUA CONFIG DO FIREBASE (Configurações do projeto → Seus apps → Web)
-    const firebaseConfig = {
-      apiKey: "COLE_AQUI",
-      authDomain: "COLE_AQUI",
-      projectId: "COLE_AQUI",
-      storageBucket: "COLE_AQUI",
-      messagingSenderId: "COLE_AQUI",
-      appId: "COLE_AQUI"
-    };
+      // 2) Inicializa
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+      // 3) UI helpers
+      const $ = (id) => document.getElementById(id);
+      const msgEl = $("msg");
+      const btnGoogle = $("btnGoogle");
+      const btnLogout = $("btnLogout");
+      const loggedOut = $("loggedOut");
+      const loggedIn = $("loggedIn");
+      const userBox = $("userBox");
+      const nameEl = $("name");
+      const emailEl = $("email");
+      const avatarEl = $("avatar");
 
-    // UI
-    const loggedOut = document.getElementById("loggedOut");
-    const loggedIn = document.getElementById("loggedIn");
-    const btnGoogle = document.getElementById("btnGoogle");
-    const btnLogout = document.getElementById("btnLogout");
-    const btnSave = document.getElementById("btnSave");
-    const nameEl = document.getElementById("name");
-    const emailEl = document.getElementById("email");
-    const photoEl = document.getElementById("photo");
-    const buscaEl = document.getElementById("busca");
-    const cidadeEl = document.getElementById("cidade");
-    const statusEl = document.getElementById("status");
-
-    function setStatus(msg) {
-      statusEl.textContent = msg || "";
-    }
-
-    // Login Google (Redirect é melhor no celular)
-    btnGoogle.addEventListener("click", async () => {
-      setStatus("Abrindo login do Google...");
-      const provider = new GoogleAuthProvider();
-      await signInWithRedirect(auth, provider);
-    });
-
-    // Quando voltar do Google
-    try {
-      await getRedirectResult(auth);
-    } catch (e) {
-      console.log(e);
-      setStatus("Erro no login: " + (e?.message || e));
-    }
-
-    // Estado do usuário
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        loggedIn.classList.add("hidden");
-        loggedOut.classList.remove("hidden");
-        setStatus("");
-        return;
+      function setMsg(text) {
+        msgEl.textContent = text || "";
       }
 
-      loggedOut.classList.add("hidden");
-      loggedIn.classList.remove("hidden");
-
-      nameEl.textContent = user.displayName || "Usuário";
-      emailEl.textContent = user.email || "";
-      photoEl.src = user.photoURL || "https://via.placeholder.com/56";
-
-      // Carrega perfil do Firestore (se existir)
-      const ref = doc(db, "users", user.uid);
-      const snap = await getDoc(ref);
-      if (snap.exists()) {
-        const data = snap.data();
-        if (data?.busca) buscaEl.value = data.busca;
-        if (data?.cidade) cidadeEl.value = data.cidade;
-        setStatus("Perfil carregado.");
-      } else {
-        // Cria um perfil básico na primeira vez
-        await setDoc(ref, {
-          uid: user.uid,
-          name: user.displayName || "",
-          email: user.email || "",
-          photoURL: user.photoURL || "",
-          busca: "ficar",
-          cidade: "",
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp()
-        }, { merge: true });
-        setStatus("Conta criada! Ajuste sua busca e salve seu perfil.");
+      function showLoggedOut() {
+        loggedOut.style.display = "block";
+        loggedIn.style.display = "none";
+        userBox.style.display = "none";
+        setMsg("");
       }
-    });
 
-    // Salvar perfil
-    btnSave.addEventListener("click", async () => {
-      const user = auth.currentUser;
-      if (!user) return;
+      function showLoggedIn(user) {
+        loggedOut.style.display = "none";
+        loggedIn.style.display = "block";
+        userBox.style.display = "flex";
 
-      setStatus("Salvando...");
-      const ref = doc(db, "users", user.uid);
-      await setDoc(ref, {
-        busca: buscaEl.value,
-        cidade: cidadeEl.value.trim(),
-        updatedAt: serverTimestamp()
-      }, { merge: true });
+        nameEl.textContent = user.displayName || "Sem nome";
+        emailEl.textContent = user.email || "Sem e-mail";
 
-      setStatus("✅ Perfil salvo!");
-    });
+        const photo = user.photoURL || "";
+        avatarEl.src = photo || "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
+          <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80">
+            <rect width="100%" height="100%" rx="18" ry="18" fill="rgba(255,255,255,.08)"/>
+            <text x="50%" y="52%" dominant-baseline="middle" text-anchor="middle"
+              font-family="Arial" font-size="28" fill="rgba(255,255,255,.75)">CP</text>
+          </svg>
+        `);
+      }
 
-    // Logout
-    btnLogout.addEventListener("click", async () => {
-      await signOut(auth);
-    });
-  </script>
-</body>
+      // 4) Login Google
+      btnGoogle.addEventListener("click", async () => {
+        setMsg("");
+        btnGoogle.disabled = true;
+
+        try {
+          const provider = new firebase.auth.GoogleAuthProvider();
+          provider.setCustomParameters({ prompt: "select_account" });
+
+          // Em celular às vezes bloqueia popup -> se falhar tenta redirect
+          try {
+            await auth.signInWithPopup(provider);
+          } catch (popupErr) {
+            // fallback redirect
+            await auth.signInWithRedirect(provider);
+          }
+        } catch (err) {
+          console.error(err);
+          setMsg("Erro no login: " + (err?.message || "tente novamente"));
+          btnGoogle.disabled = false;
+        }
+      });
+
+      btnLogout.addEventListener("click", async () => {
+        try {
+          await auth.signOut();
+        } catch (err) {
+          console.error(err);
+          alert("Erro ao sair: " + (err?.message || "tente novamente"));
+        }
+      });
+
+      // Botão “Continuar” só pra teste (depois vira tela de perfil)
+      $("btnGo").addEventListener("click", () => {
+        alert("Boa! Próximo passo: criar tela de Perfil + salvar no Firestore.");
+      });
+
+      // 5) Observa login
+      auth.onAuthStateChanged((user) => {
+        btnGoogle.disabled = false;
+        if (user) showLoggedIn(user);
+        else showLoggedOut();
+      });
+
+      // 6) Se usou redirect, pega resultado
+      auth.getRedirectResult().catch((err) => {
+        console.error(err);
+        setMsg("Erro no redirect: " + (err?.message || "tente novamente"));
+      });
+    </script>
+  </body>
 </html>
