@@ -1,157 +1,172 @@
 <!doctype html>
-<html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>ConectaPlus</title>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ConectaPlus</title>
+  <style>
+    :root{
+      --bg1:#13060a; --bg2:#2b0d14;
+      --card: rgba(40, 40, 50, .45);
+      --border: rgba(255,255,255,.10);
+      --text:#eaeaf0; --muted:rgba(234,234,240,.75);
+      --pink:#ff3b6b;
+    }
+    body{
+      margin:0; min-height:100vh; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background: radial-gradient(1200px 800px at 20% 15%, #3a0f1e 0%, transparent 55%),
+                  linear-gradient(135deg, var(--bg2), var(--bg1));
+      display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+    .wrap{width:min(560px, 100%);}
+    .brand{font-size:48px; font-weight:800; letter-spacing:-1px; margin:0 0 14px;}
+    .brand .p{color:var(--pink);}
+    .card{
+      background: var(--card);
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:18px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 80px rgba(0,0,0,.40);
+    }
+    .hint{color:var(--muted); margin:10px 0 14px; line-height:1.35}
+    .btn{
+      width:100%;
+      border:0;
+      border-radius:14px;
+      padding:14px 16px;
+      font-size:16px;
+      font-weight:700;
+      cursor:pointer;
+      background: var(--pink);
+      color:#fff;
+    }
+    .btn:disabled{opacity:.55; cursor:not-allowed}
+    .row{display:flex; gap:12px; align-items:center}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; border-radius:999px;
+      border:1px solid var(--border); background: rgba(0,0,0,.25);
+      font-weight:700;
+    }
+    .avatar{
+      width:56px; height:56px; border-radius:16px; object-fit:cover;
+      border:1px solid var(--border);
+    }
+    .sp{height:10px}
+    .input{
+      width:100%;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.25);
+      color:var(--text);
+      outline:none;
+      font-size:15px;
+    }
+    .label{font-size:13px; color:var(--muted); margin:10px 0 6px}
+    .mini{font-size:13px; color:var(--muted)}
+    .danger{color:#ff9aa8}
+    .topbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:12px}
+    .linkbtn{
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.25);
+      color:var(--text);
+      border-radius:12px;
+      padding:10px 12px;
+      cursor:pointer;
+      font-weight:800;
+    }
+    .ok{color:#9effb6}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1 class="brand">Conecta<span class="p">Plus</span></h1>
 
-    <style>
-      :root {
-        --bg: #0f0f12;
-        --card: #17171d;
-        --text: #f2f2f2;
-        --muted: #b8b8c2;
-        --pink: #ff4d6d;
-        --pink2: #ff2d55;
-        --line: rgba(255, 255, 255, 0.08);
-      }
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-        background: radial-gradient(1200px 800px at 70% 0%, rgba(255,77,109,.18), transparent 55%),
-                    radial-gradient(900px 700px at 0% 20%, rgba(255,45,85,.12), transparent 55%),
-                    var(--bg);
-        color: var(--text);
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
-        padding: 24px;
-      }
-      .wrap { width: 100%; max-width: 420px; }
-      .brand {
-        font-size: 34px;
-        font-weight: 800;
-        letter-spacing: .2px;
-        margin: 0 0 14px;
-      }
-      .brand span { color: var(--pink); }
-      .card {
-        background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        padding: 18px;
-        box-shadow: 0 12px 40px rgba(0,0,0,.35);
-      }
-      .muted { color: var(--muted); font-size: 14px; line-height: 1.4; margin: 0 0 14px; }
-      .row { display: flex; gap: 10px; align-items: center; }
-      .btn {
-        width: 100%;
-        border: 0;
-        border-radius: 12px;
-        padding: 14px 14px;
-        font-weight: 700;
-        cursor: pointer;
-        display: inline-flex;
-        gap: 10px;
-        align-items: center;
-        justify-content: center;
-        transition: transform .06s ease, opacity .2s ease;
-        user-select: none;
-      }
-      .btn:active { transform: scale(.98); }
-      .btn.primary { background: linear-gradient(90deg, var(--pink), var(--pink2)); color: white; }
-      .btn.ghost { background: rgba(255,255,255,.06); color: white; border: 1px solid var(--line); }
-      .btn:disabled { opacity: .55; cursor: not-allowed; }
-      .divider { height: 1px; background: var(--line); margin: 14px 0; }
-      .userBox { display: none; gap: 12px; align-items: center; }
-      .avatar {
-        width: 52px; height: 52px; border-radius: 14px;
-        background: rgba(255,255,255,.08);
-        border: 1px solid var(--line);
-        object-fit: cover;
-      }
-      .name { margin: 0; font-weight: 800; }
-      .email { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
-      .status {
-        display: inline-flex;
-        padding: 6px 10px;
-        border-radius: 999px;
-        background: rgba(255,77,109,.14);
-        border: 1px solid rgba(255,77,109,.25);
-        color: #ffd1da;
-        font-size: 12px;
-        font-weight: 700;
-      }
-      .warn {
-        margin-top: 12px;
-        font-size: 12px;
-        color: #ffd1da;
-        opacity: .9;
-      }
-      .small { font-size: 12px; color: var(--muted); margin-top: 12px; }
-      code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
-    </style>
-  </head>
-
-  <body>
-    <div class="wrap">
-      <h1 class="brand">Conecta<span>Plus</span></h1>
-
-      <div class="card">
-        <p class="muted">
-          Login rápido pra liberar seu perfil. Depois a gente coloca <b>Ficar / Namorar / Ver o que rola</b>.
-        </p>
-
-        <div id="loggedOut">
-          <button id="btnGoogle" class="btn primary">
-            <span>Entrar com Google</span>
-          </button>
-
-          <div class="warn" id="msg"></div>
-
-          <div class="small">
-            Se der erro de domínio, vamos ajustar em: <code>Firebase → Authentication → Configurações</code>.
-          </div>
-        </div>
-
-        <div id="loggedIn" style="display:none;">
-          <div class="row" style="justify-content:space-between; margin-bottom: 10px;">
-            <span class="status">Logado ✅</span>
-            <button id="btnLogout" class="btn ghost" style="width:auto; padding:10px 12px;">
-              Sair
-            </button>
-          </div>
-
-          <div class="row userBox" id="userBox">
-            <img id="avatar" class="avatar" alt="Foto" />
-            <div>
-              <p class="name" id="name">—</p>
-              <p class="email" id="email">—</p>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
-          <button id="btnGo" class="btn primary">
-            Continuar
-          </button>
-
-          <p class="small">
-            Próximo passo: salvar seu perfil no Firestore (nome + objetivo + cidade).
-          </p>
-        </div>
+    <!-- TELA LOGIN -->
+    <div id="screenLogin" class="card">
+      <div class="hint">
+        Login rápido pra liberar seu perfil. Depois a gente coloca <b>Ficar / Namorar / Ver o que rola.</b>
       </div>
+
+      <button id="btnGoogle" class="btn">Entrar com Google</button>
+      <div class="sp"></div>
+
+      <div id="loginInfo" style="display:none">
+        <div class="row">
+          <span class="pill">Logado ✅</span>
+          <button id="btnSair" class="linkbtn">Sair</button>
+        </div>
+        <div class="sp"></div>
+        <div class="row">
+          <img id="userPhoto" class="avatar" alt="foto"/>
+          <div>
+            <div style="font-weight:900; font-size:18px" id="userName">—</div>
+            <div class="mini" id="userEmail">—</div>
+          </div>
+        </div>
+        <div class="sp"></div>
+
+        <button id="btnContinuar" class="btn">Continuar</button>
+        <div class="sp"></div>
+        <div class="mini">Próximo passo: criar tela de Perfil + salvar no Firestore.</div>
+      </div>
+
+      <div class="sp"></div>
+      <div id="errBox" class="mini danger"></div>
     </div>
 
-    <!-- Firebase (compat) - ideal pra GitHub Pages (sem bundler) -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <!-- TELA PERFIL -->
+    <div id="screenPerfil" class="card" style="display:none">
+      <div class="topbar">
+        <div class="pill">Perfil</div>
+        <button id="btnVoltar" class="linkbtn">Voltar</button>
+      </div>
 
-    <script>
-      // 1) COLE AQUI O firebaseConfig DO SEU PROJETO (Configuração do SDK -> Config)
-      // Substitua tudo dentro do objeto abaixo.
-      const firebaseConfig = {
+      <div class="label">Nome</div>
+      <input id="inpNome" class="input" placeholder="Seu nome" />
+
+      <div class="label">Objetivo</div>
+      <select id="selObjetivo" class="input">
+        <option value="Ficar">Ficar</option>
+        <option value="Namorar">Namorar</option>
+        <option value="Ver o que rola">Ver o que rola</option>
+      </select>
+
+      <div class="label">Cidade (Brasil)</div>
+      <input id="inpCidade" class="input" placeholder="Ex: São Paulo - SP" />
+
+      <div class="sp"></div>
+      <button id="btnSalvar" class="btn">Salvar no Firestore</button>
+
+      <div class="sp"></div>
+      <div id="perfilMsg" class="mini"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    // Firebase (SDK modular via CDN)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // ✅ COLE AQUI O SEU firebaseConfig (o bloco que aparece em "Configuração do SDK")
+    const firebaseConfig = {
   apiKey: "AIzaSyADFaVHqZWtFO-etJsP4JucbDQBbseIhBc",
   authDomain: "conectaplus-b3174.firebaseapp.com",
   projectId: "conectaplus-b3174",
@@ -160,100 +175,174 @@
   appId: "1:304017868403:web:7f1189c0e297d73ada8c06"
 };
 
-      // 2) Inicializa
-      firebase.initializeApp(firebaseConfig);
-      const auth = firebase.auth();
+    // ---------- UI helpers ----------
+    const $ = (id) => document.getElementById(id);
+    const screenLogin = $("screenLogin");
+    const screenPerfil = $("screenPerfil");
 
-      // 3) UI helpers
-      const $ = (id) => document.getElementById(id);
-      const msgEl = $("msg");
-      const btnGoogle = $("btnGoogle");
-      const btnLogout = $("btnLogout");
-      const loggedOut = $("loggedOut");
-      const loggedIn = $("loggedIn");
-      const userBox = $("userBox");
-      const nameEl = $("name");
-      const emailEl = $("email");
-      const avatarEl = $("avatar");
+    const btnGoogle = $("btnGoogle");
+    const btnSair = $("btnSair");
+    const btnContinuar = $("btnContinuar");
+    const btnVoltar = $("btnVoltar");
+    const btnSalvar = $("btnSalvar");
 
-      function setMsg(text) {
-        msgEl.textContent = text || "";
+    const loginInfo = $("loginInfo");
+    const errBox = $("errBox");
+
+    const userPhoto = $("userPhoto");
+    const userName = $("userName");
+    const userEmail = $("userEmail");
+
+    const inpNome = $("inpNome");
+    const selObjetivo = $("selObjetivo");
+    const inpCidade = $("inpCidade");
+    const perfilMsg = $("perfilMsg");
+
+    function showLogin(){
+      screenLogin.style.display = "block";
+      screenPerfil.style.display = "none";
+      perfilMsg.textContent = "";
+    }
+
+    function showPerfil(){
+      screenLogin.style.display = "none";
+      screenPerfil.style.display = "block";
+      perfilMsg.textContent = "";
+    }
+
+    function setError(msg){
+      errBox.textContent = msg || "";
+    }
+
+    // ---------- Init ----------
+    let app, auth, db;
+    try {
+      app = initializeApp(firebaseConfig);
+      auth = getAuth(app);
+      db = getFirestore(app);
+    } catch (e) {
+      setError("⚠️ Erro ao iniciar Firebase. Confira o firebaseConfig.");
+      console.error(e);
+    }
+
+    const provider = new GoogleAuthProvider();
+
+    // ---------- Auth ----------
+    btnGoogle.addEventListener("click", async () => {
+      setError("");
+      try {
+        await signInWithPopup(auth, provider);
+      } catch (e) {
+        console.error(e);
+        setError("Erro no login: " + (e?.message || e));
       }
+    });
 
-      function showLoggedOut() {
-        loggedOut.style.display = "block";
-        loggedIn.style.display = "none";
-        userBox.style.display = "none";
-        setMsg("");
-      }
+    btnSair.addEventListener("click", async () => {
+      setError("");
+      await signOut(auth);
+      showLogin();
+    });
 
-      function showLoggedIn(user) {
-        loggedOut.style.display = "none";
-        loggedIn.style.display = "block";
-        userBox.style.display = "flex";
+    btnContinuar.addEventListener("click", async () => {
+      // Abre a tela de perfil e tenta carregar dados existentes do usuário
+      const u = auth.currentUser;
+      if(!u) return;
 
-        nameEl.textContent = user.displayName || "Sem nome";
-        emailEl.textContent = user.email || "Sem e-mail";
+      showPerfil();
 
-        const photo = user.photoURL || "";
-        avatarEl.src = photo || "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
-          <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80">
-            <rect width="100%" height="100%" rx="18" ry="18" fill="rgba(255,255,255,.08)"/>
-            <text x="50%" y="52%" dominant-baseline="middle" text-anchor="middle"
-              font-family="Arial" font-size="28" fill="rgba(255,255,255,.75)">CP</text>
-          </svg>
-        `);
-      }
-
-      // 4) Login Google
-      btnGoogle.addEventListener("click", async () => {
-        setMsg("");
-        btnGoogle.disabled = true;
-
-        try {
-          const provider = new firebase.auth.GoogleAuthProvider();
-          provider.setCustomParameters({ prompt: "select_account" });
-
-          // Em celular às vezes bloqueia popup -> se falhar tenta redirect
-          try {
-            await auth.signInWithPopup(provider);
-          } catch (popupErr) {
-            // fallback redirect
-            await auth.signInWithRedirect(provider);
-          }
-        } catch (err) {
-          console.error(err);
-          setMsg("Erro no login: " + (err?.message || "tente novamente"));
-          btnGoogle.disabled = false;
+      // Prefill (se já existe no Firestore, carrega)
+      perfilMsg.textContent = "Carregando seu perfil…";
+      try {
+        const ref = doc(db, "users", u.uid);
+        const snap = await getDoc(ref);
+        if (snap.exists()) {
+          const data = snap.data();
+          inpNome.value = data?.nome || (u.displayName || "");
+          selObjetivo.value = data?.objetivo || "Ficar";
+          inpCidade.value = data?.cidade || "";
+          perfilMsg.textContent = "Perfil carregado ✅";
+          perfilMsg.className = "mini ok";
+        } else {
+          inpNome.value = u.displayName || "";
+          selObjetivo.value = "Ficar";
+          inpCidade.value = "";
+          perfilMsg.textContent = "Preencha seu perfil e salve ✅";
+          perfilMsg.className = "mini";
         }
-      });
+      } catch (e) {
+        console.error(e);
+        perfilMsg.textContent = "Não consegui carregar. Você pode salvar mesmo assim.";
+        perfilMsg.className = "mini danger";
+      }
+    });
 
-      btnLogout.addEventListener("click", async () => {
-        try {
-          await auth.signOut();
-        } catch (err) {
-          console.error(err);
-          alert("Erro ao sair: " + (err?.message || "tente novamente"));
-        }
-      });
+    btnVoltar.addEventListener("click", () => {
+      showLogin();
+    });
 
-      // Botão “Continuar” só pra teste (depois vira tela de perfil)
-      $("btnGo").addEventListener("click", () => {
-        alert("Boa! Próximo passo: criar tela de Perfil + salvar no Firestore.");
-      });
+    btnSalvar.addEventListener("click", async () => {
+      perfilMsg.textContent = "";
+      const u = auth.currentUser;
+      if(!u){
+        perfilMsg.textContent = "Você precisa estar logado.";
+        perfilMsg.className = "mini danger";
+        return;
+      }
 
-      // 5) Observa login
-      auth.onAuthStateChanged((user) => {
-        btnGoogle.disabled = false;
-        if (user) showLoggedIn(user);
-        else showLoggedOut();
-      });
+      const nome = (inpNome.value || "").trim();
+      const objetivo = selObjetivo.value;
+      const cidade = (inpCidade.value || "").trim();
 
-      // 6) Se usou redirect, pega resultado
-      auth.getRedirectResult().catch((err) => {
-        console.error(err);
-        setMsg("Erro no redirect: " + (err?.message || "tente novamente"));
-      });
-    </script>
-  </body>
+      if(!nome || !cidade){
+        perfilMsg.textContent = "Preencha pelo menos Nome e Cidade.";
+        perfilMsg.className = "mini danger";
+        return;
+      }
+
+      btnSalvar.disabled = true;
+      perfilMsg.textContent = "Salvando no Firestore…";
+
+      try {
+        await setDoc(doc(db, "users", u.uid), {
+          uid: u.uid,
+          nome,
+          objetivo,
+          cidade,
+          email: u.email || null,
+          foto: u.photoURL || null,
+          updatedAt: serverTimestamp(),
+          createdAt: serverTimestamp(), // (se quiser manter createdAt real depois, eu ajusto)
+        }, { merge: true });
+
+        perfilMsg.textContent = "Salvo ✅ Agora olha no Firestore: users → " + u.uid;
+        perfilMsg.className = "mini ok";
+      } catch (e) {
+        console.error(e);
+        perfilMsg.textContent = "Erro ao salvar: " + (e?.message || e);
+        perfilMsg.className = "mini danger";
+      } finally {
+        btnSalvar.disabled = false;
+      }
+    });
+
+    onAuthStateChanged(auth, (u) => {
+      if (u) {
+        loginInfo.style.display = "block";
+        btnGoogle.style.display = "none";
+        userPhoto.src = u.photoURL || "";
+        userPhoto.style.display = u.photoURL ? "block" : "none";
+        userName.textContent = u.displayName || "Usuário";
+        userEmail.textContent = u.email || "";
+        btnContinuar.disabled = false;
+        setError("");
+      } else {
+        loginInfo.style.display = "none";
+        btnGoogle.style.display = "block";
+        btnContinuar.disabled = true;
+        showLogin();
+      }
+    });
+  </script>
+</body>
 </html>
