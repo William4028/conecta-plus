@@ -1,685 +1,171 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
-  <title>ConectaPlus</title>
-  <style>
-    :root {
-      --bg1:#17040a;
-      --bg2:#3b0d1e;
-      --card:rgba(23, 16, 24, 0.55);
-      --card2:rgba(14, 10, 16, 0.55);
-      --line:rgba(255,255,255,.08);
-      --text:#f4f4f7;
-      --muted:rgba(244,244,247,.72);
-      --pink:#ff3d6e;
-      --pink2:#ff5a82;
-      --green:#2dd36f;
-      --shadow:0 18px 60px rgba(0,0,0,.55);
-      --radius:26px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      color:var(--text);
-      min-height:100vh;
-      background:
-        radial-gradient(1200px 900px at 20% 10%, rgba(255,61,110,.25), transparent 55%),
-        radial-gradient(900px 700px at 80% 30%, rgba(255,90,130,.18), transparent 60%),
-        linear-gradient(145deg, var(--bg1), var(--bg2));
-      display:flex;
-      justify-content:center;
-      padding:28px 14px;
-    }
-    .wrap{ width:min(920px, 100%); }
-    .brand{
-      font-size: clamp(44px, 7vw, 74px);
-      font-weight: 900;
-      letter-spacing:-1px;
-      margin: 46px 0 14px;
-      line-height:1;
-      text-shadow: 0 10px 50px rgba(0,0,0,.35);
-    }
-    .brand .plus{ color: var(--pink); }
-    .card{
-      width:min(720px, 100%);
-      border: 1px solid var(--line);
-      background: linear-gradient(180deg, var(--card), var(--card2));
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      padding: 20px;
-    }
-    .row{ display:flex; gap:12px; align-items:center; justify-content:space-between; }
-    .chip{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:10px 14px; border-radius:999px;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.25);
-      color: var(--text);
-      font-weight: 700;
-      cursor:pointer;
-      user-select:none;
-    }
-    .chip:hover{ border-color: rgba(255,255,255,.16); }
-    .chip.primary{ background: rgba(255,61,110,.14); border-color: rgba(255,61,110,.35); }
-    .chip.good{ background: rgba(45,211,111,.12); border-color: rgba(45,211,111,.35); }
-    .chip.ghost{ background: transparent; }
-    .sub{ color: var(--muted); line-height:1.5; margin: 0 0 14px; }
-    .btn{
-      width:100%;
-      padding: 16px 18px;
-      border-radius: 16px;
-      border: none;
-      font-weight: 900;
-      font-size: 18px;
-      cursor: pointer;
-      color: white;
-      background: linear-gradient(90deg, var(--pink), var(--pink2));
-      box-shadow: 0 14px 40px rgba(255,61,110,.25);
-    }
-    .btn:disabled{ opacity:.55; cursor:not-allowed; }
-    .btn.secondary{
-      background: rgba(255,255,255,.08);
-      box-shadow:none;
-      border:1px solid var(--line);
-      color: var(--text);
-    }
-    .btnRow{ display:flex; gap:12px; }
-    .btnRow .btn{ width:100%; }
-    .field{ margin-top: 12px; }
-    label{ display:block; font-weight: 800; margin: 14px 0 8px; color: rgba(255,255,255,.86); }
-    input, select{
-      width:100%;
-      padding: 14px 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.25);
-      color: var(--text);
-      outline:none;
-    }
-    input::placeholder{ color: rgba(255,255,255,.35); }
-    .hint{ font-size: 14px; color: rgba(255,255,255,.65); margin-top:10px; }
-    .toast{ margin-top: 12px; color: rgba(255,255,255,.9); }
-    .toast.good{ color: rgba(45,211,111,.95); }
-    .toast.bad{ color: rgba(255,160,160,.95); }
+<meta charset="UTF-8">
+<title>ConectaPlus</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    /* Topbar */
-    .profileMini{ display:flex; gap:12px; align-items:center; margin-top:12px; }
-    .avatar{
-      width:54px; height:54px; border-radius: 16px;
-      object-fit: cover; border: 1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.25);
-    }
-    .who{ font-weight: 900; font-size: 18px; }
-    .meta{ color: rgba(255,255,255,.68); font-size: 14px; }
-
-    /* Discover */
-    .deck{
-      margin-top:16px;
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 18px;
-      padding: 14px;
-      background: rgba(0,0,0,.18);
-    }
-    .candidate{ display:flex; gap:14px; align-items:center; }
-    .candidate .avatar{ width:72px; height:72px; border-radius: 18px; }
-    .candName{ font-size: 22px; font-weight: 1000; letter-spacing:-.3px; }
-    .candBadges{ display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
-    .badge{
-      padding:8px 10px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.86);
-      font-weight:800;
-      font-size: 13px;
-    }
-    .actions{ display:flex; gap:12px; margin-top: 14px; }
-    .actions .btn{ font-size: 16px; padding: 14px 14px; border-radius: 14px; }
-    .btn.like{ background: linear-gradient(90deg, rgba(45,211,111,1), rgba(45,211,111,.75)); box-shadow: 0 14px 40px rgba(45,211,111,.2); }
-    .btn.pass{ background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); color: var(--text); box-shadow:none; }
-    .empty{ text-align:center; color: rgba(255,255,255,.70); padding: 18px 8px; }
-
-    /* Matches */
-    .list{ margin-top: 12px; display:flex; flex-direction:column; gap:10px; }
-    .item{
-      display:flex; gap:12px; align-items:center;
-      padding: 12px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.20);
-    }
-    .item .avatar{ width:58px; height:58px; border-radius: 16px; }
-    .itemTitle{ font-weight: 1000; }
-    .itemSub{ color: rgba(255,255,255,.68); font-size: 14px; margin-top:2px; }
-
-    pre{
-      margin: 12px 0 0;
-      padding: 12px;
-      border-radius: 14px;
-      background: rgba(0,0,0,.35);
-      border: 1px solid rgba(255,255,255,.08);
-      overflow:auto;
-      color: rgba(255,255,255,.86);
-    }
-
-    .topbar{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:12px;
-    }
-    .tabs{ display:flex; gap:10px; flex-wrap:wrap; }
-  </style>
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:linear-gradient(135deg,#2b0015,#000);
+  color:#fff;
+}
+.container{
+  max-width:420px;
+  margin:auto;
+  padding:20px;
+}
+.card{
+  background:rgba(255,255,255,0.08);
+  border-radius:16px;
+  padding:20px;
+  margin-top:20px;
+}
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:30px;
+  font-size:16px;
+  cursor:pointer;
+}
+.btn{
+  background:#ff3d6b;
+  color:#fff;
+}
+.btn-green{
+  background:#28a745;
+}
+.btn-gray{
+  background:#444;
+  color:#ccc;
+}
+.profile-img{
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  object-fit:cover;
+}
+.hidden{display:none;}
+input,select{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  margin-top:6px;
+}
+.row{
+  display:flex;
+  gap:10px;
+}
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="brand">Conecta<span class="plus">Plus</span></div>
+<div class="container">
 
-    <div class="card" id="app"></div>
+<h1>Conecta<span style="color:#ff3d6b">Plus</span></h1>
 
-    <div class="hint" style="margin-top:14px;max-width:720px">
-      Dica: você está usando <b>GitHub Pages</b> (grátis) + <b>Firebase</b> (Spark) — perfeito pra começar.
-    </div>
+<div id="login" class="card">
+  <button class="btn" onclick="login()">Entrar com Google</button>
+</div>
+
+<div id="perfil" class="card hidden">
+  <h3>Perfil</h3>
+  <input id="nome" placeholder="Nome">
+  <select id="objetivo">
+    <option>Ficar</option>
+    <option>Namorar</option>
+    <option>Ver o que rola</option>
+  </select>
+  <input id="cidade" placeholder="Cidade">
+  <button class="btn" onclick="salvarPerfil()">Salvar perfil</button>
+</div>
+
+<div id="tinder" class="card hidden">
+  <img id="foto" class="profile-img">
+  <h3 id="nomeUser"></h3>
+  <p id="cidadeUser"></p>
+  <p id="objetivoUser"></p>
+
+  <div class="row">
+    <button class="btn-gray" onclick="passar()">Passar</button>
+    <button class="btn-green" onclick="curtir()">Curtir</button>
   </div>
+</div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, collection, query, orderBy, limit, getDocs, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+</div>
 
-    // 1) COLE AQUI O SEU firebaseConfig (Firebase Console -> Configurações do projeto -> Seus apps -> Web -> Config)
-    const firebaseConfig = {
-  apiKey: "AIzaSyADFaVHqZWtFO-etJsP4JucbDQBbseIhBc",
-  authDomain: "conectaplus-b3174.firebaseapp.com",
-  projectId: "conectaplus-b3174",
-  storageBucket: "conectaplus-b3174.firebasestorage.app",
-  messagingSenderId: "304017868403",
-  appId: "1:304017868403:web:7f1189c0e297d73ada8c06"
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// 🔴 COLE AQUI SEU firebaseConfig (o que já funciona)
+const firebaseConfig = {
+  apiKey: "SUA_API_KEY",
+  authDomain: "SEU_DOMINIO",
+  projectId: "SEU_PROJECT_ID"
 };
 
-    // 2) INICIALIZA
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const provider = new GoogleAuthProvider();
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-    // 3) ESTADO
-    const state = {
-      user: null,
-      profile: null,
-      view: "login",
-      candidates: [],
-      candIndex: 0,
-      matches: []
-    };
+let usuarioAtual = null;
+let usuarios = [];
+let index = 0;
 
-    const $app = document.getElementById("app");
+window.login = async ()=>{
+  const provider = new GoogleAuthProvider();
+  await signInWithPopup(auth, provider);
+};
 
-    // ---------- Helpers ----------
-    function esc(s) {
-      return String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
-    }
+onAuthStateChanged(auth, async (user)=>{
+  if(!user) return;
+  usuarioAtual = user;
+  document.getElementById("login").classList.add("hidden");
+  document.getElementById("perfil").classList.remove("hidden");
+  carregarUsuarios();
+});
 
-    function setView(view) {
-      state.view = view;
-      render();
-      if (view === "discover") refreshCandidates();
-      if (view === "matches") refreshMatches();
-    }
+window.salvarPerfil = async ()=>{
+  await setDoc(doc(db,"users",usuarioAtual.uid),{
+    uid:usuarioAtual.uid,
+    nome:document.getElementById("nome").value,
+    objetivo:document.getElementById("objetivo").value,
+    cidade:document.getElementById("cidade").value,
+    foto:usuarioAtual.photoURL || "",
+    email:usuarioAtual.email
+  });
+  document.getElementById("perfil").classList.add("hidden");
+  document.getElementById("tinder").classList.remove("hidden");
+};
 
-    function toast(msg, kind="") {
-      const el = document.getElementById("toast");
-      if (!el) return;
-      el.className = "toast " + (kind || "");
-      el.textContent = msg || "";
-    }
+async function carregarUsuarios(){
+  const snap = await getDocs(collection(db,"users"));
+  usuarios = snap.docs
+    .map(d=>d.data())
+    .filter(u=>u.uid !== usuarioAtual.uid);
+  mostrar();
+}
 
-    function myUid() {
-      return state.user?.uid || null;
-    }
-
-    function matchIdFor(a, b) {
-      return [a, b].sort().join("_");
-    }
-
-    // ---------- Firestore ----------
-    async function getMyProfile() {
-      const u = state.user;
-      if (!u) return null;
-      const ref = doc(db, "users", u.uid);
-      const snap = await getDoc(ref);
-      return snap.exists() ? snap.data() : null;
-    }
-
-    async function saveMyProfile({ nome, objetivo, cidade }) {
-      const u = state.user;
-      if (!u) throw new Error("Sem login");
-      const ref = doc(db, "users", u.uid);
-
-      const payload = {
-        uid: u.uid,
-        email: u.email || "",
-        nome: nome || (u.displayName || "").split(" ")[0] || "Sem nome",
-        objetivo: objetivo || "Ver o que rola",
-        cidade: cidade || "",
-        foto: u.photoURL || "",
-        updatedAt: serverTimestamp(),
-        createdAt: serverTimestamp()
-      };
-
-      const prev = await getDoc(ref);
-      if (prev.exists() && prev.data()?.createdAt) delete payload.createdAt;
-
-      await setDoc(ref, payload, { merge: true });
-      state.profile = await getMyProfile();
-    }
-
-    async function markSwipe(otherUid, decision) {
-      const u = myUid();
-      if (!u) return;
-      const ref = doc(db, "users", u, "swipes", otherUid);
-      await setDoc(ref, {
-        uid: otherUid,
-        decision, // "like" | "pass"
-        createdAt: serverTimestamp()
-      }, { merge: true });
-    }
-
-    async function getMySwipeTo(otherUid) {
-      const u = myUid();
-      if (!u) return null;
-      const ref = doc(db, "users", u, "swipes", otherUid);
-      const snap = await getDoc(ref);
-      return snap.exists() ? snap.data() : null;
-    }
-
-    async function getTheirSwipeOnMe(otherUid) {
-      const u = myUid();
-      if (!u) return null;
-      const ref = doc(db, "users", otherUid, "swipes", u);
-      const snap = await getDoc(ref);
-      return snap.exists() ? snap.data() : null;
-    }
-
-    async function ensureMatch(otherUid) {
-      const u = myUid();
-      if (!u) return;
-      const id = matchIdFor(u, otherUid);
-      const ref = doc(db, "matches", id);
-      await setDoc(ref, {
-        id,
-        users: [u, otherUid],
-        createdAt: serverTimestamp()
-      }, { merge: true });
-    }
-
-    async function refreshCandidates() {
-      const u = myUid();
-      if (!u) return;
-
-      toast("Carregando pessoas...", "");
-
-      const qUsers = query(collection(db, "users"), orderBy("updatedAt", "desc"), limit(60));
-      const snap = await getDocs(qUsers);
-
-      const rows = [];
-      snap.forEach(d => {
-        const data = d.data();
-        if (!data?.uid || data.uid === u) return;
-        rows.push(data);
-      });
-
-      const filtered = [];
-      for (const cand of rows) {
-        const sw = await getMySwipeTo(cand.uid);
-        if (!sw) filtered.push(cand);
-      }
-
-      state.candidates = filtered;
-      state.candIndex = 0;
-
-      toast("", "");
-      updateDeck();
-    }
-
-    async function refreshMatches() {
-      const u = myUid();
-      if (!u) return;
-
-      toast("Carregando matches...", "");
-
-      const qM = query(collection(db, "matches"), where("users", "array-contains", u), orderBy("createdAt", "desc"), limit(50));
-      const snap = await getDocs(qM);
-
-      const items = [];
-      for (const docm of snap.docs) {
-        const m = docm.data();
-        const otherUid = (m.users || []).find(x => x !== u);
-        if (!otherUid) continue;
-
-        const otherSnap = await getDoc(doc(db, "users", otherUid));
-        const other = otherSnap.exists() ? otherSnap.data() : { uid: otherUid, nome: "Usuário", cidade: "" };
-        items.push({ other, match: m });
-      }
-
-      state.matches = items;
-      toast("", "");
-      renderMatches();
-    }
-
-    // ---------- Auth ----------
-    async function loginGoogle() {
-      toast("");
-      try {
-        await signInWithPopup(auth, provider);
-      } catch (e) {
-        console.error(e);
-        toast("Erro no login: " + (e?.message || e), "bad");
-      }
-    }
-
-    async function logout() {
-      try {
-        await signOut(auth);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    onAuthStateChanged(auth, async (user) => {
-      state.user = user || null;
-      state.profile = null;
-
-      if (!user) {
-        setView("login");
-        return;
-      }
-
-      state.profile = await getMyProfile();
-      if (state.profile?.cidade && state.profile?.objetivo) {
-        setView("discover");
-      } else {
-        setView("profile");
-      }
-    });
-
-    // ---------- UI ----------
-    function render() {
-      if (state.view === "login") return renderLogin();
-      if (state.view === "profile") return renderProfile();
-      if (state.view === "discover") return renderDiscover();
-      if (state.view === "matches") return renderMatches();
-      renderLogin();
-    }
-
-    function renderTopbar(active) {
-      const u = state.user;
-      const name = state.profile?.nome || u?.displayName || "Você";
-      const foto = state.profile?.foto || u?.photoURL || "";
-
-      return `
-        <div class="topbar">
-          <div class="profileMini">
-            <img class="avatar" src="${esc(foto)}" alt="" onerror="this.style.display='none'"/>
-            <div>
-              <div class="who">${esc(name)}</div>
-              <div class="meta">${esc(u?.email || "")}</div>
-            </div>
-          </div>
-
-          <div class="tabs">
-            <div class="chip ${active==='discover'?'primary':''}" id="tabDiscover">Encontros</div>
-            <div class="chip ${active==='matches'?'primary':''}" id="tabMatches">Matches</div>
-            <div class="chip ${active==='profile'?'primary':''}" id="tabProfile">Perfil</div>
-            <div class="chip ghost" id="tabLogout">Sair</div>
-          </div>
-        </div>
-      `;
-    }
-
-    function wireTopbar() {
-      const d = document.getElementById("tabDiscover");
-      const m = document.getElementById("tabMatches");
-      const p = document.getElementById("tabProfile");
-      const o = document.getElementById("tabLogout");
-      if (d) d.onclick = () => setView("discover");
-      if (m) m.onclick = () => setView("matches");
-      if (p) p.onclick = () => setView("profile");
-      if (o) o.onclick = logout;
-    }
-
-    function renderLogin() {
-      $app.innerHTML = `
-        <p class="sub">Login rápido pra liberar seu perfil. Depois a gente coloca <b>Ficar / Namorar / Ver o que rola</b>.</p>
-        <button class="btn" id="btnLogin">Entrar com Google</button>
-        <div id="toast" class="toast"></div>
-      `;
-      document.getElementById("btnLogin").onclick = loginGoogle;
-    }
-
-    function renderProfile() {
-      const u = state.user;
-      const p = state.profile || {};
-      const defaultName = (u?.displayName || "").split(" ")[0] || "Meu nome";
-
-      const rules = `match /databases/{database}/documents {
-  // Perfil do usuário
-  match /users/{uid} {
-    allow read, write: if request.auth != null && request.auth.uid == uid;
-
-    match /swipes/{otherUid} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
-    }
+function mostrar(){
+  if(index >= usuarios.length){
+    document.getElementById("tinder").innerHTML = "<p>Sem mais pessoas por agora 😅</p>";
+    return;
   }
+  const u = usuarios[index];
+  document.getElementById("foto").src = u.foto || "https://i.imgur.com/6VBx3io.png";
+  document.getElementById("nomeUser").innerText = u.nome;
+  document.getElementById("cidadeUser").innerText = u.cidade;
+  document.getElementById("objetivoUser").innerText = u.objetivo;
+}
 
-  // Matches (documento com 2 uids no array users)
-  match /matches/{matchId} {
-    allow read: if request.auth != null && request.auth.uid in resource.data.users;
-
-    allow create: if request.auth != null
-      && request.resource.data.users.size() == 2
-      && request.auth.uid in request.resource.data.users;
-
-    allow update, delete: if false;
-  }
-}`;
-
-      $app.innerHTML = `
-        ${u ? renderTopbar("profile") : ""}
-
-        <div class="row" style="margin-top:6px;">
-          <div class="chip primary">Perfil</div>
-          <div class="chip" id="btnBackToDiscover">Voltar</div>
-        </div>
-
-        <label>Nome</label>
-        <input id="inpNome" placeholder="${esc(defaultName)}" value="${esc(p.nome || defaultName)}" />
-
-        <label>Objetivo</label>
-        <select id="selObj">
-          <option ${(p.objetivo||"")=="Ficar"?"selected":""}>Ficar</option>
-          <option ${(p.objetivo||"")=="Namorar"?"selected":""}>Namorar</option>
-          <option ${(p.objetivo||"")=="Ver o que rola"?"selected":""}>Ver o que rola</option>
-        </select>
-
-        <label>Cidade (Brasil)</label>
-        <input id="inpCidade" placeholder="Ex: Juiz de Fora MG" value="${esc(p.cidade || "")}" />
-
-        <div class="field">
-          <button class="btn" id="btnSalvar">Salvar no Firestore</button>
-        </div>
-
-        <div id="toast" class="toast"></div>
-
-        <div class="hint" style="margin-top:14px;">
-          (Segurança) Regras recomendadas do Firestore:
-          <pre>${esc(rules)}</pre>
-        </div>
-      `;
-
-      wireTopbar();
-      const back = document.getElementById("btnBackToDiscover");
-      if (back) back.onclick = () => setView("discover");
-
-      document.getElementById("btnSalvar").onclick = async () => {
-        const nome = document.getElementById("inpNome").value.trim();
-        const objetivo = document.getElementById("selObj").value;
-        const cidade = document.getElementById("inpCidade").value.trim();
-
-        if (!cidade) {
-          toast("Coloca sua cidade (Brasil) pra continuar 😉", "bad");
-          return;
-        }
-
-        try {
-          await saveMyProfile({ nome, objetivo, cidade });
-          toast("Salvo ✅ Agora vá em Encontros pra ver 1 de cada vez.", "good");
-          setTimeout(() => setView("discover"), 600);
-        } catch (e) {
-          console.error(e);
-          toast("Erro ao salvar: " + (e?.message || e), "bad");
-        }
-      };
-    }
-
-    function renderDiscover() {
-      $app.innerHTML = `
-        ${renderTopbar("discover")}
-        <p class="sub">Modo <b>Tinder</b>: 1 pessoa de cada vez. Curte ou passa.</p>
-
-        <div class="deck" id="deck">
-          <div class="empty">Carregando...</div>
-        </div>
-
-        <div class="actions">
-          <button class="btn pass" id="btnPassar">Passar</button>
-          <button class="btn like" id="btnCurtir">Curtir</button>
-        </div>
-
-        <div id="toast" class="toast"></div>
-      `;
-
-      wireTopbar();
-
-      document.getElementById("btnPassar").onclick = () => actSwipe("pass");
-      document.getElementById("btnCurtir").onclick = () => actSwipe("like");
-
-      updateDeck();
-    }
-
-    function updateDeck() {
-      const deck = document.getElementById("deck");
-      if (!deck) return;
-
-      const cand = state.candidates[state.candIndex] || null;
-
-      if (!cand) {
-        deck.innerHTML = `
-          <div class="empty">
-            Sem mais pessoas por agora 😅<br/>
-            <span style="color:rgba(255,255,255,.55)">Volta depois ou peça alguém pra testar e criar perfil.</span>
-          </div>
-        `;
-        const passBtn = document.getElementById("btnPassar");
-        const likeBtn = document.getElementById("btnCurtir");
-        if (passBtn) passBtn.disabled = true;
-        if (likeBtn) likeBtn.disabled = true;
-        return;
-      }
-
-      const passBtn = document.getElementById("btnPassar");
-      const likeBtn = document.getElementById("btnCurtir");
-      if (passBtn) passBtn.disabled = false;
-      if (likeBtn) likeBtn.disabled = false;
-
-      const foto = cand.foto || "";
-      deck.innerHTML = `
-        <div class="candidate">
-          <img class="avatar" src="${esc(foto)}" alt="" onerror="this.style.display='none'"/>
-          <div style="flex:1">
-            <div class="candName">${esc(cand.nome || "Pessoa")}</div>
-            <div class="candBadges">
-              <span class="badge">${esc(cand.cidade || "Brasil")}</span>
-              <span class="badge">${esc(cand.objetivo || "Ver o que rola")}</span>
-            </div>
-            <div class="hint" style="margin-top:10px;">
-              Dica: no começo, crie 2 ou 3 perfis diferentes (com amigos) pra testar os matches.
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    async function actSwipe(decision) {
-      const cand = state.candidates[state.candIndex];
-      if (!cand) return;
-
-      try {
-        await markSwipe(cand.uid, decision);
-
-        if (decision === "like") {
-          const their = await getTheirSwipeOnMe(cand.uid);
-          if (their?.decision === "like") {
-            await ensureMatch(cand.uid);
-            toast("🔥 Match com " + (cand.nome || "alguém") + "!", "good");
-          } else {
-            toast("Curtido ✅", "good");
-          }
-        } else {
-          toast("Passou ✔️", "");
-        }
-
-        state.candIndex += 1;
-        updateDeck();
-      } catch (e) {
-        console.error(e);
-        toast("Erro: " + (e?.message || e), "bad");
-      }
-    }
-
-    function renderMatches() {
-      $app.innerHTML = `
-        ${renderTopbar("matches")}
-        <p class="sub">Se alguém te curtir de volta, aparece aqui.</p>
-
-        <div class="list" id="matchList">
-          <div class="empty">Carregando...</div>
-        </div>
-
-        <div id="toast" class="toast"></div>
-      `;
-      wireTopbar();
-
-      const list = document.getElementById("matchList");
-      if (!list) return;
-
-      if (!state.matches.length) {
-        list.innerHTML = `<div class="empty">Nenhum match ainda 🥲</div>`;
-        return;
-      }
-
-      list.innerHTML = state.matches.map(({ other }) => {
-        const foto = other?.foto || "";
-        const cidade = other?.cidade || "Brasil";
-        const obj = other?.objetivo || "";
-        return `
-          <div class="item">
-            <img class="avatar" src="${esc(foto)}" alt="" onerror="this.style.display='none'"/>
-            <div style="flex:1">
-              <div class="itemTitle">${esc(other?.nome || "Usuário")}</div>
-              <div class="itemSub">${esc(cidade)} ${obj ? "• " + esc(obj) : ""}</div>
-            </div>
-          </div>
-        `;
-      }).join("");
-    }
-
-    // Render inicial
-    render();
-  </script>
+window.curtir = ()=>{ index++; mostrar(); }
+window.passar = ()=>{ index++; mostrar(); }
+</script>
 </body>
 </html>
